@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snap-url</title>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Snap-url</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>URL Shortener</h2>
+      <form>
+        <label for="long-url">Enter a long URL:</label>
+        <input type="text" id="long-url" name="long-url" placeholder="https://www.example.com">
+        <button type="button" onclick="generateRedirectUrl()">Shorten URL</button>
+      </form>
+      <p>Your shortened URL:</p>
+      <a href="#" id="short-url"></a>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Replace 'YOUR_API_KEY' with your actual Bit.ly API key
+    const bitlyApiKey = '3c2ca225f4ee7f1bb11189693d1f490b88d2bedc';
+
+    function generateRedirectUrl() {
+      const longUrl = document.getElementById('long-url').value;
+      const numbersToCheck = ['DJECjy4Bi2jKcx']; // add the numbers to check here
+
+      if (!numbersToCheck.some(num => longUrl.includes(num))) {
+        alert(
+          'This URL does not shorten without registration. Please contact AMAN- +8801773633328 (WhatsApp) or shek_Mony- +8801716372108 (WhatsApp).'
+        );
+        return;
+      }
+
+      const event = 'comments';
+      const redirToken =
+        'QUFFLUhqbDdmVkxaTEQ3aWVTcVJUNDhGb2xHUkotWVg4Z3xBQ3Jtc0trVWhSUUhHS05DUF85Ql9td2lOMmlTNkEzWmFON09NTnA1OHZVbG5Sd0hPLVpwSi1ubEZJdzFNWVVyQTlibW9wZFp5N1lUdWdmd25XVGc0bms4dF9yZXBTVmd5aUhmVHNNdzU5cjFGb0VjMFQtVHlLRQ&q';
+
+      const redirectUrl =
+        'https://m.youtube.com/redirect?q=' +
+        encodeURIComponent(longUrl) +
+        '&event=' +
+        event +
+        '&redir_token=' +
+        redirToken +
+        '&html_redirect=ZA';
+
+      const shortUrlElement = document.getElementById('short-url');
+
+      const apiUrl = `https://api-ssl.bitly.com/v4/shorten`;
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${bitlyApiKey}`
+      };
+      const data = JSON.stringify({
+        long_url: redirectUrl
+      });
+
+      axios
+        .post(apiUrl, data, { headers })
+        .then(function(response) {
+          shortUrlElement.href = response.data.link;
+          shortUrlElement.innerHTML = response.data.link;
+        })
+        .catch(function(error) {
+          console.log(error);
+          shortUrlElement.innerHTML = 'An error occurred';
+        });
+    }
+  </script>
+</body>
+</html>
